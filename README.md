@@ -28,7 +28,7 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
     You can use any logs for training the model
 
     Reccomended to put them in data/raw/
-    
+
     Or you can use small logs sample that is ready for use in data/sample, you can leave it there
 
 2. Install dependencies:
@@ -58,5 +58,5 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
     --output-anomalies - path for CSV-table with all anomaly requests, if not stated data/processed/anomalies.csv will be used
     ```
     ```
-    --contamination - percentage of expected anomaly logs
+    --contamination - percentage of expected anomaly logs, if not mentioned will equal 0.1 (10%)
     ```
