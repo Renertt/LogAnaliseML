@@ -42,8 +42,8 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
     --log-file (necessarily) - logs for analysis
     ```
     ```
-    --train-file - logs used for training the model, if not stated will used the saved model
-    ```
+    --train-file ``` - path to logs used for training the model, if not stated will used the saved model
+    
     ```
     --model-path - path to the saved model, if not stated modelsSaved/isolation_forest.pkl will be used
     ```
