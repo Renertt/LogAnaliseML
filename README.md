@@ -22,6 +22,7 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
     ```
 
 1. Logs for model training (optional):
+
     I used logs from https://www.kaggle.com/datasets/eliasdabbas/web-server-access-logs
     You can use any logs for training the model
     Reccomended to put them in data/raw/
