@@ -1,29 +1,45 @@
 ### Description
 
-My first project in the field of machine learning. Its goal is to develop a model that can predict the value of a house based on its characteristics.
-
-The project is based on data from the Kaggle competition https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview
+    Anomaly detector for web logs. It parses raw-logs, extacts features and uses Isolation Forest model to detect suspicious requests.
 
 ### Technology stack
 
 *   **Language:** Python
 *   **Libraries:**
     *   Pandas - for proccessing data
-    *   Scikit-learn - to buildштп RandomForest-model
-    *   Xgboost - for building XGB-model
-    *   Lightgbm - for building LGB-model
-    *   Papermill - for one-file-running
+    *   Scikit-learn - to build IsolationForest-model
+    *   joblib - saving the model
 
-### MAE
+### How to run
 
-Current best MAE: 16,940.88 dollars
-Current best MAPE: 9.34 %
+0. Create a virual environment (optional):
+    ```
+    python -m venv venv
+    ```
+    ```
+    source venv/bin/activate    # On Linux/Mac
+    source venv\Scripts\activate    # On Windows
+    ```
 
-### Total
+1. Logs for model training (optional):
+    I used logs from https://www.kaggle.com/datasets/eliasdabbas/web-server-access-logs
+    You can use any logs for training the model
+    Reccomended to put them in data/raw/
+    Or you can use small logs sample that is ready for use in data/sample, you can leave it there
 
-9.34% MAPE became the best result that I can do here without full code refactor. I will try advancing the result starting this project again in another repo and fully refactoring its code. 
-Also I will first-try using Deep Learning in the new repo.
+2. Install dependencies:
+    ```
+    pip install -r requirements.txt
+    ```
 
-python -m run --train-file data/sample/access_sample.log --log-file data/sample/access_sample.log  --output-all data/processed/allLog.csv --output-anomalies data/processed/anomalies.csv
+3. Run run.py
+    ```
+    python -m run
+    ```
 
-python -m run --train-file data/raw/access.log --log-file data/raw/access.log  --output-all data/processed/allLog.csv --output-anomalies data/processed/anomalies.csv
+    Command-line arguments:
+    --log-file (necessarily) - logs for analysis
+    --train-file - logs used for training the model, if not stated will used the saved model
+    --model-path - path to the saved model, if not stated modelsSaved/isolation_forest.pkl will be used
+    --output-all - path for CSV-table with all the unique IP and their features, if not stated data/processed/all_results.csv will be used
+    --output-anomalies - path for CSV-table with all anomaly requests, if not stated data/processed/anomalies_only.csv will be used
