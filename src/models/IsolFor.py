@@ -2,7 +2,7 @@ from sklearn.ensemble import IsolationForest
 import joblib
 import os
 
-def train_isolation_forest(X, model_path, contamination=0.1):
+def train_isolation_forest(X, model_path, contamination):
     model = IsolationForest(contamination=contamination, random_state=42)
     model.fit(X)
     joblib.dump(model, model_path)

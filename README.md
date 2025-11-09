@@ -48,8 +48,11 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
     --model-path - path to the saved model, if not stated modelsSaved/isolation_forest.pkl will be used
     ```
     ```
-    --output-all - path for CSV-table with all the unique IP and their features, if not stated data/processed/all_results.csv will be used
+    --output-all - path for CSV-table with all the unique IP and their features, if not stated data/processed/allLogs.csv will be used
     ```
     ```
-    --output-anomalies - path for CSV-table with all anomaly requests, if not stated data/processed/anomalies_only.csv will be used
+    --output-anomalies - path for CSV-table with all anomaly requests, if not stated data/processed/anomalies.csv will be used
+    ```
+    ```
+    --contamination - percentage of expected anomaly logs
     ```

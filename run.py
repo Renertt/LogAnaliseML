@@ -14,8 +14,9 @@ def main():
     parser.add_argument('--log-file', required=True, help="File to analyze for anomalies")
     parser.add_argument('--train-file', help="File to train the model on. If not provided, uses saved model.")
     parser.add_argument('--model-path', default='modelsSaved/isolation_forest.pkl', help="Path to saved model")
-    parser.add_argument('--output-all', default='data/processed/all_results.csv', help="Path for CSV table for all unique IP")
-    parser.add_argument('--output-anomalies', default='data/processed/anomalies_only.csv', help="Path for CSV table for all anomalie requests")
+    parser.add_argument('--output-all', default='data/processed/allLog.csv', help="Path for CSV table for all unique IP")
+    parser.add_argument('--output-anomalies', default='data/processed/anomalies.csv', help="Path for CSV table for all anomaly requests")
+    parser.add_argument('--contamination', type=float, default=0.1, help="Percent of anomaly logs")
     args = parser.parse_args()
 
     logs = []
@@ -53,7 +54,7 @@ def main():
             return
 
         X_train = train_features.select_dtypes(include='number').drop(columns=['ip'], errors='ignore')
-        model = train_isolation_forest(X_train, model_path=args.model_path)
+        model = train_isolation_forest(X_train, model_path=args.model_path, contamination=args.contamination)
     else:
         print("Loading existing model...")
         model = load_model(args.model_path)
