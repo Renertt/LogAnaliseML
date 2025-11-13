@@ -6,7 +6,7 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
 
 *   **Language:** Python
 *   **Libraries:**
-    *   Pandas - for proccessing data
+    *   Pandas - for processing data
     *   Scikit-learn - to build IsolationForest-model
     *   joblib - saving the model
 
@@ -27,7 +27,7 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
 
     You can use any logs for training the model
 
-    Reccomended to put them in data/raw/
+    Recommended to put them in data/raw/
 
     Or you can use small logs sample that is ready for use in data/sample, you can leave it there
 
@@ -44,19 +44,14 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
     Command-line arguments:
     ```
     --log-file (necessarily) - logs for analysis
-    ```
-    ```
+    
     --train-file - path to logs used for training the model, if not stated will used the saved model
-    ```
-    ```
+    
     --model-path - path to the saved model, if not stated modelsSaved/isolation_forest.pkl will be used
-    ```
-    ```
+    
     --output-all - path for CSV-table with all the unique IP and their features, if not stated data/processed/allLogs.csv will be used
-    ```
-    ```
+    
     --output-anomalies - path for CSV-table with all anomaly requests, if not stated data/processed/anomalies.csv will be used
-    ```
-    ```
+    
     --contamination - percentage of expected anomaly logs, if not mentioned will equal 0.1 (10%)
     ```
