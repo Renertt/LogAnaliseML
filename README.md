@@ -43,7 +43,7 @@ Anomaly detector for web logs. It parses raw-logs, extacts features and uses Iso
 
     Command-line arguments:
     ```
-    --log-file (necessarily) - logs for analysis
+    --log-file (required) - logs for analysis
     
     --train-file - path to logs used for training the model, if not stated will used the saved model
     
