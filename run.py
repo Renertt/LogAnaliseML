@@ -2,6 +2,7 @@ import argparse
 from src.parser import parse_log_line
 from src.features import extract_features
 from src.models.IsolFor import train_isolation_forest, predict_anomalies, load_model
+from src.models.autoEncode import train_autoencoder, detect_anomalies
 import joblib
 import os
 
