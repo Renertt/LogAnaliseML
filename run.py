@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--output-anomalies', default='data/processed/anomalies.csv', help="Path for CSV table for all anomaly requests")
     parser.add_argument('--contamination', type=float, default=0.1, help="Percent of anomaly logs")
     parser.add_argument('--estimators', type=int, default=200, help="Number of estimators for Isolation Forest")
+    parser.add_argument('--n-jobs', type=int, default=3, help="Number of jobs for Isolation Forest")
     parser.add_argument('--autoencode', action='store_true', help="If true - use autoencoder")
     args = parser.parse_args()
 
@@ -58,7 +59,13 @@ def main():
             return
 
         X_train = train_features.select_dtypes(include='number').drop(columns=['ip'], errors='ignore')
-        model = train_isolation_forest(X_train, model_path=args.model_path, contamination=args.contamination, estimators=args.estimators)
+        model = train_isolation_forest(
+            X_train, 
+            model_path=args.model_path, 
+            contamination=args.contamination, 
+            estimators=args.estimators, 
+            n_jobs=args.n_jobs
+            )
     else:
         print("Loading existing model...")
         model = load_model(args.model_path)
