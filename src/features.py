@@ -5,6 +5,9 @@ def extract_features(log_entries):
     if df.empty:
         return pd.DataFrame(), pd.DataFrame()
 
+    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce') 
+    df = df.dropna(subset=['timestamp'])
+
     features = df.groupby('ip').agg(
         total_requests=('ip', 'count'),
         error_rate=('status', lambda x: (x >= 400).mean()),
