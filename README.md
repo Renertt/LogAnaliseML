@@ -112,7 +112,7 @@ Anomaly detection using Autoencoder neural networks.
 
     --output-anomalies - path for CSV-table with all anomaly requests, if not stated data/processed/anomalies.csv will be used
 
-    --threshold - threshold for anomaly detection, if not stated will be used 0.5
+    --percentile - percentile for anomaly detection, if not stated will be used 90
 
     --plot-mse - flag to plot mean squared error during training
    ```
