@@ -54,7 +54,7 @@ def train_autoencoder(features):
     print("Done")
     return autoencoder
 
-def detect_anomalies(features_df, model, threshold, plot_mse):
+def detect_anomalies(features_df, model, percentile, plot_mse):
 
     scaler = joblib.load('modelsSaved/scaler.save')
 
@@ -69,9 +69,7 @@ def detect_anomalies(features_df, model, threshold, plot_mse):
     # (Оригинал - Восстановленное)^2 -> среднее
     mse = np.mean(np.power(data_scaled - reconstructions, 2), axis=1)
 
-    if threshold is None:
-        threshold = np.percentile(mse, 85)
-        print(f"Auto threshold: {threshold}")
+    threshold = np.percentile(mse, percentile)
 
     anomalies_mask = mse > threshold
 
@@ -86,6 +84,22 @@ def detect_anomalies(features_df, model, threshold, plot_mse):
         plt.grid(True)
         plt.savefig('data/processed/mse_histogram.png', dpi=300, bbox_inches='tight')
         plt.close()
+
+        mse_tail = mse[mse > 0.1]  # фильтруем только большие ошибки
+        if len(mse_tail) > 0:  # проверяем, что есть данные
+            plt.figure(figsize=(12, 6))
+            plt.hist(mse_tail, bins=50, alpha=0.7, color='orange', edgecolor='black')
+            plt.axvline(threshold, color='red', linestyle='--', label=f'threshold={threshold}')
+            plt.title('MSE Distribution (Tail Only) — Anomalies Zone')
+            plt.xlabel('MSE')
+            plt.ylabel('Count')
+            plt.legend()
+            plt.grid(True)
+            plt.savefig('data/processed/mse_histogram_tail.png', dpi=300, bbox_inches='tight')
+            plt.close()
+            print("Saved tail MSE histogram to data/processed/mse_histogram_tail.png")
+        else:
+            print("No MSE values > 0.1 found — skipping tail plot.")
     
     return anomalies_mask, mse
 
