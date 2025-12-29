@@ -16,7 +16,7 @@ def parse_log_line(line):
 
     try:
         data['timestamp'] = datetime.strptime(data['timestamp'], '%d/%b/%Y:%H:%M:%S %z')
-    except:
+    except ValueError:
         data['timestamp'] = None
 
     req_parts = data['request'].split()
