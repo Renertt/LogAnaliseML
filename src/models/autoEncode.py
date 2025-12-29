@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Dense
+from keras.models import Model
+from keras.layers import Input, Dense
 from sklearn.preprocessing import StandardScaler
 import joblib
 
