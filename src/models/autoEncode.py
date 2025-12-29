@@ -15,7 +15,7 @@ def train_autoencoder(features):
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(data_numeric)
 
-    joblib.dump(scaler, 'data/temp/scaler.save') 
+    joblib.dump(scaler, 'modelsSaved/scaler.save') 
 
     input_dim = data_scaled.shape[1] # 7 признаков
     
@@ -51,7 +51,7 @@ def train_autoencoder(features):
 def detect_anomalies(features_df, threshold=None):
     
     model = tf.keras.models.load_model('modelsSaved/autoencoder.keras')
-    scaler = joblib.load('data/temp/scaler.save')
+    scaler = joblib.load('modelsSaved/scaler.save')
 
     ips = features_df['ip'].values # Отдельное сохранение айпи
     
