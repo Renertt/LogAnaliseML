@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--output-all', default='data/processed/allLog.csv', help="Path for CSV table for all unique IP")
     parser.add_argument('--output-anomalies', default='data/processed/anomalies.csv', help="Path for CSV table for all anomaly requests")
     parser.add_argument('--contamination', type=float, default=0.1, help="Percent of anomaly logs")
-    parser.add_argument('--autoencode', type=bool, default=False, help="If true - use autoencoder")
+    parser.add_argument('--autoencode', action='store_true', help="If true - use autoencoder")
     args = parser.parse_args()
 
     logs = []
