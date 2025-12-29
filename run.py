@@ -9,7 +9,6 @@ import os
 def main():
     os.makedirs('data/processed', exist_ok=True)
     os.makedirs('data/raw', exist_ok=True)
-    os.makedirs('data/temp', exist_ok=True)
     os.makedirs('modelsSaved', exist_ok=True)
 
     parser = argparse.ArgumentParser()
