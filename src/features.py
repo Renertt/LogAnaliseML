@@ -13,7 +13,7 @@ def extract_features(log_entries):
         error_rate=('status', lambda x: (x >= 400).mean()),
         unique_paths=('path', 'nunique'),
         avg_size=('size', 'mean'),
-        methods=('method', lambda x: x.nunique()),
+        methods=('method', 'nunique'),
         first_seen=('timestamp', 'min'),
         last_seen=('timestamp', 'max')
     )
