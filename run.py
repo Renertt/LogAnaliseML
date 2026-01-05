@@ -7,10 +7,6 @@ import joblib
 import os
 
 def main():
-    os.makedirs('data/processed', exist_ok=True)
-    os.makedirs('data/raw', exist_ok=True)
-    os.makedirs('modelsSaved', exist_ok=True)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--log-file', required=True, help="File to analyze for anomalies")
     parser.add_argument('--train-file', help="File to train the model on. If not provided, uses saved model.")
@@ -30,12 +26,30 @@ def main():
         print(f"Log file {args.log_file} does not exist.")
         return
 
+    if not args.train_file:
+        if args.autoencode and not os.path.exists(args.AE_model_path):
+            print(f"Autoencoder model file {args.AE_model_path} does not exist.")
+            return
+        if not args.autoencode and not os.path.exists(args.IF_model_path):
+            print(f"Isolation Forest model file {args.IF_model_path} does not exist.")
+            return
+
+    os.makedirs('data/processed', exist_ok=True)
+    os.makedirs('data/raw', exist_ok=True)
+    os.makedirs('modelsSaved', exist_ok=True)
+    os.makedirs(os.path.dirname(args.output_all), exist_ok=True)
+    os.makedirs(os.path.dirname(args.output_anomalies), exist_ok=True)
+
     logs = []
-    with open(args.log_file) as f:
-        for line in f:
-            parsed = parse_log_line(line)
-            if parsed:
-                logs.append(parsed)
+    try:
+        with open(args.log_file) as f:
+            for line in f:
+                parsed = parse_log_line(line)
+                if parsed:
+                    logs.append(parsed)
+    except PermissionError:
+        print(f"Permission denied when trying to read {args.log_file}")
+        return
 
     if not logs:
         print("No valid logs parsed")
