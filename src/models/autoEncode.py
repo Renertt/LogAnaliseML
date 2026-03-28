@@ -55,7 +55,7 @@ def train_autoencoder(features):
     print("Done")
     return autoencoder
 
-def detect_anomalies(features_df, model, percentile, plot_mse):
+def detect_anomalies(features_df, model, sensitivity, plot_mse):
 
     scaler = joblib.load('modelsSaved/scaler.save')
 
@@ -70,7 +70,10 @@ def detect_anomalies(features_df, model, percentile, plot_mse):
     # (Оригинал - Восстановленное)^2 -> среднее
     mse = np.mean(np.power(data_scaled - reconstructions, 2), axis=1)
 
-    threshold = np.percentile(mse, percentile)
+    mean_mse = np.mean(mse)
+    std_mse = np.std(mse)
+
+    threshold = mean_mse + sensitivity * std_mse
 
     anomalies_mask = mse > threshold
 
@@ -86,7 +89,7 @@ def detect_anomalies(features_df, model, percentile, plot_mse):
         plt.savefig('data/processed/mse_histogram.png', dpi=300, bbox_inches='tight')
         plt.close()
 
-        mse_tail = mse[mse > 0.1]  # фильтруем только большие ошибки
+        mse_tail = mse[mse > mean_mse]  # фильтруем только большие ошибки
         if len(mse_tail) > 0:  # проверяем, что есть данные
             plt.figure(figsize=(12, 6))
             plt.hist(mse_tail, bins=50, alpha=0.7, color='orange', edgecolor='black')

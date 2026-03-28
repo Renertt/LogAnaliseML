@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--contamination', type=float, default=0.1, help="Percent of anomaly logs")
     parser.add_argument('--estimators', type=int, default=200, help="Number of estimators for Isolation Forest")
     parser.add_argument('--n-jobs', type=int, default=3, help="Number of jobs for Isolation Forest")
-    parser.add_argument('--percentile', type=float, default=90, help="Percentile for anomaly detection")
+    parser.add_argument('--sensitivity', type=float, default=3.0, help="Detector sensitivity, recommended range: 2.0-5.0. Default: 3.0(3-sigma rule)")
     parser.add_argument('--autoencode', action='store_true', help="If true - use autoencoder")
     parser.add_argument('--plot-mse', action='store_true', help="If true - plot MSE")
     args = parser.parse_args()
@@ -102,7 +102,7 @@ def main():
     X = features.select_dtypes(include='number').drop(columns=['ip'], errors='ignore')
 
     if args.autoencode:
-        preds, scores = detect_anomalies(features, model, args.percentile, args.plot_mse)
+        preds, scores = detect_anomalies(features, model, args.sensitivity, args.plot_mse)
     else:
         preds, scores = predict_anomalies(model, X)
 
