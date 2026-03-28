@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from keras.models import Model
-from keras.layers import Input, Dense
+from keras.layers import Input, Dense, Dropout
 from sklearn.preprocessing import StandardScaler
 import joblib
 import matplotlib.pyplot as plt
@@ -28,8 +28,9 @@ def train_autoencoder(features):
     
     # Сжимаем
     hidden_1 = Dense(64, activation="relu")(input_layer)
-    hidden_2 = Dense(32, activation="relu")(hidden_1)
-    bottleneck = Dense(encoding_dim, activation="relu")(hidden_2)
+    hidden_2 = Dropout(0.2)(hidden_1)
+    hidden_3 = Dense(32, activation="relu")(hidden_2)
+    bottleneck = Dense(encoding_dim, activation="relu")(hidden_3)
     
     # Разжимаем
     decoder_hidden_1 = Dense(32, activation="relu")(bottleneck)
