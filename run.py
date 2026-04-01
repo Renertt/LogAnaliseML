@@ -1,9 +1,10 @@
 import argparse
-from src.parser import parse_log_line
+from src.parser import parse_log_file
 from src.features import extract_features
 from src.models.IsolFor import train_isolation_forest, predict_anomalies, load_model
 from src.models.autoEncode import train_autoencoder, detect_anomalies, AE_load_model
-import joblib
+import polars as pl
+import polars.selectors as cs
 import os
 
 def main():
@@ -40,34 +41,28 @@ def main():
     os.makedirs(os.path.dirname(args.output_all), exist_ok=True)
     os.makedirs(os.path.dirname(args.output_anomalies), exist_ok=True)
 
-    logs = []
+    #logs = [] # Отказываемся от этой хуйни
     try:
-        with open(args.log_file) as f:
-            for line in f:
-                parsed = parse_log_line(line)
-                if parsed:
-                    logs.append(parsed)
+        lf = parse_log_file(args.log_file) # LazyFrame, ещё не паршено
+
+        logs = lf.collect(engine="streaming") # Парсим в таблицу, в больших данных может всё равно быть OOM
     except PermissionError:
         print(f"Permission denied when trying to read {args.log_file}")
         return
 
-    if not logs:
+    if logs.is_empty():
         print("No valid logs parsed")
         return
 
     features, raw_df = extract_features(logs)
-    if features.empty:
+    if features.is_empty():
         print("No valid logs parsed")
         return
 
     if args.train_file:
         print("Training new model...")
-        train_logs = []
-        with open(args.train_file) as f:
-            for line in f:
-                parsed = parse_log_line(line)
-                if parsed:
-                    train_logs.append(parsed)
+        lf = parse_log_file(args.log_file)
+        train_logs = lf.collect(engine="streaming")
 
         if not train_logs:
             print("No valid logs in train file")
@@ -99,25 +94,39 @@ def main():
             print("Loading existing model...")
             model = load_model(args.IF_model_path)
 
-    X = features.select_dtypes(include='number').drop(columns=['ip'], errors='ignore')
+    X = features.select(
+        cs.numeric()
+    ).drop("ip", strict=False)    # strict=False — аналог errors='ignore'
 
     if args.autoencode:
         preds, scores = detect_anomalies(features, model, args.sensitivity, args.plot_mse)
     else:
         preds, scores = predict_anomalies(model, X)
 
-    features['anomaly_score'] = scores
+    features = features.with_columns (
+        pl.Series("anomaly_score", scores)
+    )
+
+    is_anomaly_bool = (preds == -1)
 
     if args.autoencode:
-        features['is_anomaly'] = preds
+        features = features.with_columns (
+            pl.Series("is_anomaly", preds)
+        )
     else:
-        features['is_anomaly'] = preds == -1
+        features = features.with_columns(
+            pl.Series("is_anomaly", is_anomaly_bool)
+        )
 
-    features.to_csv(args.output_all, index=False)
+    features.write_csv(args.output_all)
 
-    raw_df = raw_df.merge(features[['ip', 'anomaly_score', 'is_anomaly']], on='ip', how='left')
-    anomalies_full = raw_df[raw_df['is_anomaly']].copy()
-    anomalies_full.to_csv(args.output_anomalies, index=False)
+    raw_df = raw_df.join(
+        features.select(['ip', 'anomaly_score', 'is_anomaly']), 
+        on='ip', 
+        how='left'
+    )
+    anomalies_full = raw_df.filter(pl.col("is_anomaly"))
+    anomalies_full.write_csv(args.output_anomalies)
 
     print(f"Saved {len(features)} records to {args.output_all}")
     print(f"Saved {len(anomalies_full)} anomaly records to {args.output_anomalies}")
