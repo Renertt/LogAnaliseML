@@ -69,7 +69,7 @@ def main():
             return
 
         train_features, _ = extract_features(train_logs)
-        if train_features.empty:
+        if train_features.is_empty():
             print("No valid logs in train file")
             return
 
