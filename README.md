@@ -80,7 +80,7 @@ Anomaly detection using Autoencoder neural networks.
 *   **Libraries:**
     *   TensorFlow - for building and training the Autoencoder model
     *   Keras - high-level API for TensorFlow
-    *   Pandas - for processing data
+    *   Polars - for processing data
     *   NumPy - for numerical operations
     *   Matplotlib - for plotting
 
