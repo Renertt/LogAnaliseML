@@ -1,6 +1,5 @@
 from sklearn.ensemble import IsolationForest
 import joblib
-import os
 
 def train_isolation_forest(X, model_path, contamination, estimators, n_jobs):
 
