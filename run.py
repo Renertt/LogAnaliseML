@@ -64,7 +64,7 @@ def main():
         lf = parse_log_file(args.log_file)
         train_logs = lf.collect(engine="streaming")
 
-        if not train_logs:
+        if train_logs.is_empty():
             print("No valid logs in train file")
             return
 
