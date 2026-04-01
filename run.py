@@ -73,7 +73,9 @@ def main():
             print("No valid logs in train file")
             return
 
-        X_train = train_features.select_dtypes(include='number').drop(columns=['ip'], errors='ignore')
+        X_train = features.select(
+            cs.numeric()
+        ).drop("ip", strict=False)
 
         if args.autoencode:
             model = train_autoencoder(X_train)
