@@ -5,15 +5,18 @@ from keras.layers import Input, Dense, Dropout
 from sklearn.preprocessing import StandardScaler
 import joblib
 import matplotlib.pyplot as plt
+import polars as pl
+import polars.selectors as cs
 
 def train_autoencoder(features):
 
     print("Filtering data")
-    data_numeric = features.select_dtypes(include=[np.number]).fillna(0)
+    data_numeric = features.select(cs.numeric()).drop("ip", strict=False).fill_null(0)
+    data_np = data_numeric.to_numpy().astype(np.float32)
 
     print("Scaling data")
     scaler = StandardScaler()
-    data_scaled = scaler.fit_transform(data_numeric)
+    data_scaled = scaler.fit_transform(data_np)
 
     joblib.dump(scaler, 'modelsSaved/scaler.save') 
 
@@ -57,11 +60,10 @@ def train_autoencoder(features):
 def detect_anomalies(features_df, model, sensitivity, plot_mse):
 
     scaler = joblib.load('modelsSaved/scaler.save')
-
-    ips = features_df['ip'].values
     
-    data_numeric = features_df.select_dtypes(include=[np.number]).fillna(0)
-    data_scaled = scaler.transform(data_numeric)
+    data_numeric = features_df.select(cs.numeric()).drop("ip", strict=False).fill_null(0)
+    data_np = data_numeric.to_numpy().astype(np.float32)
+    data_scaled = scaler.transform(data_np)
 
     reconstructions = model.predict(data_scaled)
 
