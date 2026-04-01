@@ -41,10 +41,8 @@ def main():
     os.makedirs(os.path.dirname(args.output_all), exist_ok=True)
     os.makedirs(os.path.dirname(args.output_anomalies), exist_ok=True)
 
-    #logs = [] # Отказываемся от этой хуйни
     try:
         lf = parse_log_file(args.log_file) # LazyFrame, ещё не паршено
-
         logs = lf.collect(engine="streaming") # Парсим в таблицу, в больших данных может всё равно быть OOM
     except PermissionError:
         print(f"Permission denied when trying to read {args.log_file}")
@@ -98,7 +96,7 @@ def main():
 
     X = features.select(
         cs.numeric()
-    ).drop("ip", strict=False)    # strict=False — аналог errors='ignore'
+    ).drop("ip", strict=False)
 
     if args.autoencode:
         preds, scores = detect_anomalies(features, model, args.sensitivity, args.plot_mse)

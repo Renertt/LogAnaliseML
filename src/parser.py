@@ -17,5 +17,3 @@ def parse_log_file(file_path):
     ])
     
     return data
-
-# Я в ахуе..
