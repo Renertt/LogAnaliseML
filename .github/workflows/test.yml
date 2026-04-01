@@ -1,0 +1,32 @@
+steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Python set up
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r full-requirements.txt
+
+      - name: Test Training
+        run: |
+          python run.py --log-file data/sample/access_sample.log \
+                        --train-file data/sample/access_sample.log
+
+      - name: Test AE Detection
+        run: |
+          python run.py --log-file data/sample/access_sample.log \
+                        --autoencode \
+                        --sensitivity 3.5 \
+                        --plot-mse \
+                        --output-anomalies data/processed/anomalies_found.csv
+
+      - name: Verify Results
+        run: |
+          ls -l data/processed/
+          ls -l modelsSaved/
+          test -f data/processed/anomalies_found.csv
